@@ -109,7 +109,7 @@ int main (int argc, char *argv[])
   size_t l;
   EFI_SIGNATURE_LIST *s;
   EFI_SIGNATURE_DATA *d;
-  void *p;
+  uint8_t *p;
 
 
   a = (EFI_VARIABLE_AUTHENTICATION_2 *) buf;
@@ -120,7 +120,7 @@ int main (int argc, char *argv[])
 
   read (0, a + 1, l - sizeof (*a));
 
-  p = &a->AuthInfo.CertData;
+  p = (void *) (char *) &a->AuthInfo.CertData;
   l -= offsetof (EFI_VARIABLE_AUTHENTICATION_2, AuthInfo.CertData);
 
   hexdump ("Authority> ", p, 0, l > 16 ? 16 : l);
@@ -138,7 +138,7 @@ int main (int argc, char *argv[])
     if (read (0, s + 1, l) != l)
       printf ("Short read\n");
 
-    p = s + 1;
+    p = (void *) (char *) (s + 1);
 
     printf ("Signature:\n");
 
@@ -147,7 +147,7 @@ int main (int argc, char *argv[])
       p += s->SignatureHeaderSize;
     }
 
-    d = p;
+    d = (void *) (char *) p;
 
     printf ("  Owner> %08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x\n",
             d->SignatureOwner.Data1,
@@ -172,12 +172,14 @@ int main (int argc, char *argv[])
     } else if (!memcmp (&s->SignatureType, &sha256_guid, sizeof (EFI_GUID))) {
       printf ("  Type> sha256\n");
 
+      printf ("  Hash> ");
 
-      hexdump ("  sha256> ", p, 0, l);
+      while (l--)
+        printf ("%02x", * (p++));
 
+      printf ("\n");
 
     }
-
   }
 
   return 0;
