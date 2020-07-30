@@ -2,6 +2,8 @@
 #include <stdint.h>
 #include <openssl/x509.h>
 #include <openssl/objects.h>
+#include <string.h>
+#include <unistd.h>
 #include "efivars.h"
 
 
@@ -14,7 +16,6 @@ EFI_GUID sha256_guid = EFI_CERT_SHA256_GUID;
 
 int x509_dump (const char *prefix, void *cert, size_t l)
 {
-  BIO *out;
   BIO *bio = BIO_new_mem_buf (cert, l);
   X509 *x509;
   char *p;
@@ -57,7 +58,6 @@ void
 hexdump (const char *p, const void *_buf, uint64_t os, uint64_t oe)
 {
   const uint8_t *d = (const uint8_t *) _buf;
-  uint8_t v;
 
   uint64_t s, e;
   uint64_t i, j, k;
@@ -67,7 +67,7 @@ hexdump (const char *p, const void *_buf, uint64_t os, uint64_t oe)
   e++;
 
   for (i = s; i < e; i += 16) {
-    printf ("%s%016llx:", p, i);
+    printf ("%s%016llx:", p, (long long unsigned) i);
 
     for (j = 0; j < 16; ++j) {
       k = i + j;
@@ -120,8 +120,12 @@ int main (int argc, char *argv[])
 
   read (0, a + 1, l - sizeof (*a));
 
+  p = &a->AuthInfo.CertData;
+  l -= offsetof (EFI_VARIABLE_AUTHENTICATION_2, AuthInfo.CertData);
+
   hexdump ("Authority> ", p, 0, l > 16 ? 16 : l);
   printf ("Authority> ...\n");
+  x509_dump ("Authority> ", p, l);
 
 
   s = (EFI_SIGNATURE_LIST *) buf;
@@ -145,7 +149,7 @@ int main (int argc, char *argv[])
 
     d = p;
 
-    printf ("  Owner> %08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x%02x%02x\n",
+    printf ("  Owner> %08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x\n",
             d->SignatureOwner.Data1,
             d->SignatureOwner.Data2,
             d->SignatureOwner.Data3,
