@@ -106,7 +106,7 @@ hexdump (const char *p, const void *_buf, uint64_t os, uint64_t oe)
 int main (int argc, char *argv[])
 {
   EFI_VARIABLE_AUTHENTICATION_2 *a;
-  size_t l;
+  size_t l, ls;
   EFI_SIGNATURE_LIST *s;
   EFI_SIGNATURE_DATA *d;
   uint8_t *p;
@@ -161,25 +161,38 @@ int main (int argc, char *argv[])
             d->SignatureOwner.Data4[5],
             d->SignatureOwner.Data4[6],
             d->SignatureOwner.Data4[7]);
-    p += offsetof (EFI_SIGNATURE_DATA, SignatureData);
-    l = s->SignatureSize - offsetof (EFI_SIGNATURE_DATA, SignatureData);
+
+    ls = s->SignatureListSize;
+    ls -= sizeof (EFI_SIGNATURE_LIST);
 
 
-    if (!memcmp (&s->SignatureType, &x509_guid, sizeof (EFI_GUID))) {
-      printf ("  Type> x509\n");
-      x509_dump ("  x509> ", p, l);
 
-    } else if (!memcmp (&s->SignatureType, &sha256_guid, sizeof (EFI_GUID))) {
-      printf ("  Type> sha256\n");
 
-      printf ("  Hash> ");
+    while (ls) {
+      p += offsetof (EFI_SIGNATURE_DATA, SignatureData);
+      l = s->SignatureSize - offsetof (EFI_SIGNATURE_DATA, SignatureData);
+      ls -= s->SignatureSize;
 
-      while (l--)
-        printf ("%02x", * (p++));
 
-      printf ("\n");
+
+      if (!memcmp (&s->SignatureType, &x509_guid, sizeof (EFI_GUID))) {
+        printf ("  Type> x509\n");
+        x509_dump ("  x509> ", p, l);
+
+      } else if (!memcmp (&s->SignatureType, &sha256_guid, sizeof (EFI_GUID))) {
+        printf ("  Type> sha256\n");
+
+        printf ("  Hash> ");
+
+        while (l--)
+          printf ("%02x", * (p++));
+
+        printf ("\n");
+      }
 
     }
+
+
   }
 
   return 0;
