@@ -1,0 +1,33 @@
+[james@inari dbxparse]$ wget http://uefi.org/sites/default/files/resources/dbxupdate_x64.bin
+--2020-07-30 17:27:43--  http://uefi.org/sites/default/files/resources/dbxupdate_x64.bin
+Resolving uefi.org (uefi.org)... 54.244.19.255
+Connecting to uefi.org (uefi.org)|54.244.19.255|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 14413 (14K) [application/octet-stream]
+Saving to: ‘dbxupdate_x64.bin’
+
+dbxupdate_x64.bin                           100%[=========================================================================================>]  14.08K  39.7KB/s    in 0.4s    
+
+2020-07-30 17:27:44 (39.7 KB/s) - ‘dbxupdate_x64.bin’ saved [14413/14413]
+
+[james@inari dbxparse]$ ./dbxparse < dbxupdate_x64.bin 
+Authority> 0000000000000000: f3 0f 1e fa 31 ed 49 89  d1 5e 48 89 e2 48 83 e4 ....1.I. .^H..H..
+Authority> ...
+Signature:
+  Owner> 77fa9abd-0359-4d32-bd60-28f4e78f784b63a6c6872dc0065
+  Type> x509
+  x509>  subject: /C=GB/ST=Isle of Man/O=Canonical Ltd./OU=Secure Boot/CN=Canonical Ltd. Secure Boot Signing
+  x509>  issuer: /C=GB/ST=Isle of Man/L=Douglas/O=Canonical Ltd./CN=Canonical Ltd. Master Certificate Authority
+  x509>  expires: Apr 11 11:39:08 2042 GMT
+Signature:
+  Owner> 77fa9abd-0359-4d32-bd60-28f4e78f784b63a6c6872dc0065
+  Type> x509
+  x509>  subject: /CN=Debian Secure Boot Signer
+  x509>  issuer: /CN=Debian Secure Boot CA
+  x509>  expires: Aug 16 18:22:50 2026 GMT
+Signature:
+  Owner> 77fa9abd-0359-4d32-bd60-28f4e78f784b63a6c6872dc0065
+  Type> sha256
+  sha256> 0000000000000000: 80 b4 d9 69 31 bf 0d 02  fd 91 a6 1e 19 d1 4f 1d ...i1... ......O.
+  sha256> 0000000000000010: a4 52 e6 6d b2 40 8c a8  60 4d 41 1f 92 65 9f 0a .R.m.@.. `MA..e..
+
