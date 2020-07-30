@@ -1,3 +1,6 @@
+Dump dbx update variables, needs libssl-dev/openssl-devel and gnu-efi headers
+
+
 [james@inari dbxparse]$ wget http://uefi.org/sites/default/files/resources/dbxupdate_x64.bin
 --2020-07-30 17:27:43--  http://uefi.org/sites/default/files/resources/dbxupdate_x64.bin
 Resolving uefi.org (uefi.org)... 54.244.19.255
@@ -28,6 +31,5 @@ Signature:
 Signature:
   Owner> 77fa9abd-0359-4d32-bd60-28f4e78f784b63a6c6872dc0065
   Type> sha256
-  sha256> 0000000000000000: 80 b4 d9 69 31 bf 0d 02  fd 91 a6 1e 19 d1 4f 1d ...i1... ......O.
-  sha256> 0000000000000010: a4 52 e6 6d b2 40 8c a8  60 4d 41 1f 92 65 9f 0a .R.m.@.. `MA..e..
+  Hash> 80b4d96931bf0d02fd91a61e19d14f1da452e66db2408ca8604d411f92659f0a
 
